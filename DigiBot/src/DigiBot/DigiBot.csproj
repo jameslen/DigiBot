@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <AssemblyName>DigiBot</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <PackageId>DigiBot</PackageId>
+    <RuntimeFrameworkVersion>1.0.4</RuntimeFrameworkVersion>
+    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Dev|AnyCPU'" />
+
+  <ItemGroup>
+    <ProjectReference Include="..\DigiBot.Abstractions\DigiBot.Abstractions.csproj" />
+    <ProjectReference Include="..\DigiBot.CommandProcessing\DigiBot.CommandProcessing.csproj" />
+    <ProjectReference Include="..\DigiBot.Core\DigiBot.Core.csproj" />
+    <ProjectReference Include="..\DigiBot.Discord\DigiBot.Discord.csproj" />
+    <ProjectReference Include="..\DigiBot.MessageProcessing\DigiBot.MessageProcessing.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
+    <PackageReference Include="StructureMap" Version="4.4.3" />
+  </ItemGroup>
+
+</Project>

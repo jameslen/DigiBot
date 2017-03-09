@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.6</TargetFramework>
+    <AssemblyName>DigiBot.Discord</AssemblyName>
+    <PackageId>DigiBot.Discord</PackageId>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Dev|AnyCPU'" />
+
+  <ItemGroup>
+    <ProjectReference Include="..\DigiBot.Abstractions\DigiBot.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\..\DigiDiscord\src\DigiDiscord\DigiDiscord.csproj" />
+  </ItemGroup>
+
+</Project>

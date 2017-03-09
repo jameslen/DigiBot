@@ -1,44 +1,88 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1BBE7470-9A05-4DEE-8139-3ACD6DB13E58}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{82E1A573-19BC-48EC-A751-60C4BE4231E0}"
-	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
-	EndProjectSection
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "DigiBot", "src\DigiBot\DigiBot.xproj", "{DE04604C-C7F6-4E91-8F02-E62C26F7CB16}"
-	ProjectSection(ProjectDependencies) = postProject
-		{F996D071-AAB2-4847-BB29-E35E3FD4EC5D} = {F996D071-AAB2-4847-BB29-E35E3FD4EC5D}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{3D282211-8C66-4432-A25D-C01E42ED1202}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "DigiDiscord", "..\..\DigiDiscord\src\DigiDiscord\DigiDiscord.xproj", "{F996D071-AAB2-4847-BB29-E35E3FD4EC5D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiBot", "src\DigiBot\DigiBot.csproj", "{DE04604C-C7F6-4E91-8F02-E62C26F7CB16}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiBot.Core", "src\DigiBot.Core\DigiBot.Core.csproj", "{80D19F28-5561-48D4-B3FE-15B4C2CB2C04}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiBot.Abstractions", "src\DigiBot.Abstractions\DigiBot.Abstractions.csproj", "{9F521DED-106B-4479-9BA3-5BDAE3453873}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiBot.Discord", "src\DigiBot.Discord\DigiBot.Discord.csproj", "{A73FF5D0-B82E-4DB7-9B86-E3F375FE350D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiBot.CommandProcessing", "src\DigiBot.CommandProcessing\DigiBot.CommandProcessing.csproj", "{B6A139A9-452E-4EBC-8476-0196B4C4C4AB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiBot.MessageProcessing", "src\DigiBot.MessageProcessing\DigiBot.MessageProcessing.csproj", "{BA0EF0BB-92EF-4C2E-B9C5-6311A7C18C57}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiDiscord", "..\..\DigiDiscord\src\DigiDiscord\DigiDiscord.csproj", "{2B5BE14B-C444-4E7F-A9A4-A359F17DE18C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug-Dev|Any CPU = Debug-Dev|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{DE04604C-C7F6-4E91-8F02-E62C26F7CB16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DE04604C-C7F6-4E91-8F02-E62C26F7CB16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE04604C-C7F6-4E91-8F02-E62C26F7CB16}.Debug-Dev|Any CPU.ActiveCfg = Debug-Dev|Any CPU
+		{DE04604C-C7F6-4E91-8F02-E62C26F7CB16}.Debug-Dev|Any CPU.Build.0 = Debug-Dev|Any CPU
 		{DE04604C-C7F6-4E91-8F02-E62C26F7CB16}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE04604C-C7F6-4E91-8F02-E62C26F7CB16}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F996D071-AAB2-4847-BB29-E35E3FD4EC5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F996D071-AAB2-4847-BB29-E35E3FD4EC5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F996D071-AAB2-4847-BB29-E35E3FD4EC5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F996D071-AAB2-4847-BB29-E35E3FD4EC5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80D19F28-5561-48D4-B3FE-15B4C2CB2C04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80D19F28-5561-48D4-B3FE-15B4C2CB2C04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80D19F28-5561-48D4-B3FE-15B4C2CB2C04}.Debug-Dev|Any CPU.ActiveCfg = Debug-Dev|Any CPU
+		{80D19F28-5561-48D4-B3FE-15B4C2CB2C04}.Debug-Dev|Any CPU.Build.0 = Debug-Dev|Any CPU
+		{80D19F28-5561-48D4-B3FE-15B4C2CB2C04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80D19F28-5561-48D4-B3FE-15B4C2CB2C04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F521DED-106B-4479-9BA3-5BDAE3453873}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F521DED-106B-4479-9BA3-5BDAE3453873}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F521DED-106B-4479-9BA3-5BDAE3453873}.Debug-Dev|Any CPU.ActiveCfg = Debug-Dev|Any CPU
+		{9F521DED-106B-4479-9BA3-5BDAE3453873}.Debug-Dev|Any CPU.Build.0 = Debug-Dev|Any CPU
+		{9F521DED-106B-4479-9BA3-5BDAE3453873}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F521DED-106B-4479-9BA3-5BDAE3453873}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A73FF5D0-B82E-4DB7-9B86-E3F375FE350D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A73FF5D0-B82E-4DB7-9B86-E3F375FE350D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A73FF5D0-B82E-4DB7-9B86-E3F375FE350D}.Debug-Dev|Any CPU.ActiveCfg = Debug-Dev|Any CPU
+		{A73FF5D0-B82E-4DB7-9B86-E3F375FE350D}.Debug-Dev|Any CPU.Build.0 = Debug-Dev|Any CPU
+		{A73FF5D0-B82E-4DB7-9B86-E3F375FE350D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A73FF5D0-B82E-4DB7-9B86-E3F375FE350D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6A139A9-452E-4EBC-8476-0196B4C4C4AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6A139A9-452E-4EBC-8476-0196B4C4C4AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6A139A9-452E-4EBC-8476-0196B4C4C4AB}.Debug-Dev|Any CPU.ActiveCfg = Debug-Dev|Any CPU
+		{B6A139A9-452E-4EBC-8476-0196B4C4C4AB}.Debug-Dev|Any CPU.Build.0 = Debug-Dev|Any CPU
+		{B6A139A9-452E-4EBC-8476-0196B4C4C4AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6A139A9-452E-4EBC-8476-0196B4C4C4AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA0EF0BB-92EF-4C2E-B9C5-6311A7C18C57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA0EF0BB-92EF-4C2E-B9C5-6311A7C18C57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA0EF0BB-92EF-4C2E-B9C5-6311A7C18C57}.Debug-Dev|Any CPU.ActiveCfg = Debug-Dev|Any CPU
+		{BA0EF0BB-92EF-4C2E-B9C5-6311A7C18C57}.Debug-Dev|Any CPU.Build.0 = Debug-Dev|Any CPU
+		{BA0EF0BB-92EF-4C2E-B9C5-6311A7C18C57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA0EF0BB-92EF-4C2E-B9C5-6311A7C18C57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B5BE14B-C444-4E7F-A9A4-A359F17DE18C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B5BE14B-C444-4E7F-A9A4-A359F17DE18C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B5BE14B-C444-4E7F-A9A4-A359F17DE18C}.Debug-Dev|Any CPU.ActiveCfg = Debug-Dev|Any CPU
+		{2B5BE14B-C444-4E7F-A9A4-A359F17DE18C}.Debug-Dev|Any CPU.Build.0 = Debug-Dev|Any CPU
+		{2B5BE14B-C444-4E7F-A9A4-A359F17DE18C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B5BE14B-C444-4E7F-A9A4-A359F17DE18C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{DE04604C-C7F6-4E91-8F02-E62C26F7CB16} = {1BBE7470-9A05-4DEE-8139-3ACD6DB13E58}
-		{F996D071-AAB2-4847-BB29-E35E3FD4EC5D} = {3D282211-8C66-4432-A25D-C01E42ED1202}
+		{80D19F28-5561-48D4-B3FE-15B4C2CB2C04} = {1BBE7470-9A05-4DEE-8139-3ACD6DB13E58}
+		{9F521DED-106B-4479-9BA3-5BDAE3453873} = {1BBE7470-9A05-4DEE-8139-3ACD6DB13E58}
+		{A73FF5D0-B82E-4DB7-9B86-E3F375FE350D} = {1BBE7470-9A05-4DEE-8139-3ACD6DB13E58}
+		{B6A139A9-452E-4EBC-8476-0196B4C4C4AB} = {1BBE7470-9A05-4DEE-8139-3ACD6DB13E58}
+		{BA0EF0BB-92EF-4C2E-B9C5-6311A7C18C57} = {1BBE7470-9A05-4DEE-8139-3ACD6DB13E58}
+		{2B5BE14B-C444-4E7F-A9A4-A359F17DE18C} = {3D282211-8C66-4432-A25D-C01E42ED1202}
 	EndGlobalSection
 EndGlobal

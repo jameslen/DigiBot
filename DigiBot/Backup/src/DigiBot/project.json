@@ -1,0 +1,30 @@
+﻿{
+  "version": "1.0.0-*",
+  "buildOptions": {
+    "emitEntryPoint": true
+  },
+
+  "dependencies": {
+    "DigiBot.Abstractions": "1.0.0-*",
+    "DigiBot.CommandProcessing": "1.0.0-*",
+    "DigiBot.Core": "1.0.0-*",
+    "DigiBot.Discord": "1.0.0-*",
+    "DigiBot.MessageProcessing": "1.0.0-*",
+    "Microsoft.Extensions.Configuration": "1.1.0",
+    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.1.0",
+    "Microsoft.Extensions.Configuration.Json": "1.1.0",
+    "Microsoft.Extensions.Logging": "1.1.0",
+    "Microsoft.Extensions.Logging.Console": "1.1.0",
+    "Microsoft.NETCore.App": {
+      "type": "platform",
+      "version": "1.0.1"
+    },
+      "StructureMap": "4.4.3"
+    },
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "imports": "dnxcore50"
+    }
+  }
+}
