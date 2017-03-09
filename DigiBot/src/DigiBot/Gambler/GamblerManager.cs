@@ -69,7 +69,7 @@ namespace DigiBot
             Console.WriteLine($"Checking account for {user.Name}");
             var balance = GetUserBalance(server, user);
 
-            return balance.CurrentValue > amount;
+            return balance.CurrentValue >= amount;
         }
 
         public Account GetUserBalance(string serverId, IUser user)

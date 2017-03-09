@@ -82,7 +82,7 @@ namespace DigiBot
             var discord = DigiDiscord.Discord.Instance;
             _botHostApplication = botHostApplication;
 
-            // TODO: REMOVE THIS and use env var
+            // TODO: Logger comes from logger factory
             discord.InitializeBot(_token, new ConsoleLogger(LogLevel.Debug)).Wait();
 
             discord.GuildManager.MessageCreate += ProcessMessage;

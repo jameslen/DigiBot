@@ -23,7 +23,7 @@ namespace DigiBot.Commands
         {
             if (user == null)
             {
-                var account = _manager.GetUserBalance(SourceMessage.Server.ID, SourceMessage.User);
+                var account = _manager.GetUserBalance(SourceMessage.Server.ID, User);
                 Reply($"You currently have ${account.CurrentValue}.");
             }
             else if(user.IsBot)
@@ -105,7 +105,7 @@ namespace DigiBot.Commands
             }
 
             var sb = new StringBuilder();
-
+            sb.Append("Your active bets are:\\n");
             DisplayBets(ref sb, bets);
 
             Reply(sb.ToString());
@@ -123,7 +123,7 @@ namespace DigiBot.Commands
             }
 
             var sb = new StringBuilder();
-
+            sb.Append("Your pending arbitrations are:\\n");
             DisplayBets(ref sb, bets);
 
             Reply(sb.ToString());
@@ -132,7 +132,7 @@ namespace DigiBot.Commands
         public void DeclareWinner(int betId, IUser winner)
         {
             Console.WriteLine("Declaring Winner");
-            var bet = _manager.CompleteBet(SourceMessage.Server.ID, SourceMessage.User, winner, betId);
+            var bet = _manager.CompleteBet(SourceMessage.Server.ID, User, winner, betId);
 
             if(bet == null)
             {
@@ -145,10 +145,10 @@ namespace DigiBot.Commands
 
         public void MyPendingBets()
         {
-            var bets = _manager.GetPendingBets(SourceMessage.User);
+            var bets = _manager.GetPendingBets(User);
 
             var sb = new StringBuilder();
-
+            sb.Append("Your pending bets are:\\n");
             DisplayBets(ref sb, bets);
 
             Reply(sb.ToString());
@@ -208,8 +208,6 @@ namespace DigiBot.Commands
 
         private void DisplayBets(ref StringBuilder sb, IEnumerable<Bet> bets)
         {
-            sb.Append("Your active bets are:\\n");
-
             sb.Append("```\\n");
 
             sb.Append("   |Date     |  Amount  |    Initiator   |    Against     |   Arbitrator   |\\n");
