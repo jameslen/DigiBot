@@ -26,6 +26,10 @@ namespace DigiBot.Commands
                 var account = _manager.GetUserBalance(SourceMessage.Server.ID, SourceMessage.User);
                 Reply($"You currently have ${account.CurrentValue}.");
             }
+            else if(user.IsBot)
+            {
+                Reply("Silly human...bots don't need money");
+            }
             else
             {
                 var account = _manager.GetUserBalance(SourceMessage.Server.ID, user);
@@ -54,6 +58,12 @@ namespace DigiBot.Commands
 
         public void CreateBet(IUser opp, IUser arb, int amount, string desc)
         {
+            if(opp.IsBot || arb.IsBot)
+            {
+                Reply("Bots aren't allowed to play human games...we cheat...");
+                return;
+            }
+
             if(SourceMessage.User == opp)
             {
                 Reply("Cannot bet yourself.");
@@ -96,21 +106,7 @@ namespace DigiBot.Commands
 
             var sb = new StringBuilder();
 
-            sb.Append("Your active bets are:\\n");
-
-            sb.Append("```\\n");
-
-            sb.Append("   |Date     |  Amount  |    Initiator   |    Against     |   Arbitrator   |\\n");
-            sb.Append("---|---------|----------|----------------|----------------|----------------|\\n");
-
-            int i = 1;
-            foreach (var bet in bets)
-            {
-                //sb.Append("00/00/00|Amount|TemplatedOneHaha|TemplatedOneHaha|TemplatedOneHaha");
-                sb.Append($"{i++.ToString().PadLeft(3)}|{bet.Date.Date.ToString("MM/dd/yy")} |{bet.Amount.ToString().PadLeft(10)}|{bet.Initiator.Name.PadLeft(16)}|{bet.Opponent.Name.PadLeft(16)}|{bet.Arbitor.Name.PadLeft(16)}|{bet.Description}\\n");
-            }
-            sb.Append("---|---------|----------|----------------|----------------|----------------|\\n");
-            sb.Append("```\\n");
+            DisplayBets(ref sb, bets);
 
             Reply(sb.ToString());
         }
@@ -128,21 +124,7 @@ namespace DigiBot.Commands
 
             var sb = new StringBuilder();
 
-            sb.Append("Your active bets are:\\n");
-
-            sb.Append("```\\n");
-
-            sb.Append("   |Date     |  Amount  |    Initiator   |    Against     |   Arbitrator   |\\n");
-            sb.Append("---|---------|----------|----------------|----------------|----------------|\\n");
-
-            int i = 1;
-            foreach (var bet in bets)
-            {
-                //sb.Append("00/00/00|Amount|TemplatedOneHaha|TemplatedOneHaha|TemplatedOneHaha");
-                sb.Append($"{i++.ToString().PadLeft(3)}|{bet.Date.Date.ToString("MM/dd/yy")} |{bet.Amount.ToString().PadLeft(10)}|{bet.Initiator.Name.PadLeft(16)}|{bet.Opponent.Name.PadLeft(16)}|{bet.Arbitor.Name.PadLeft(16)}|{bet.Description}\\n");
-            }
-            sb.Append("---|---------|----------|----------------|----------------|----------------|\\n");
-            sb.Append("```\\n");
+            DisplayBets(ref sb, bets);
 
             Reply(sb.ToString());
         }
@@ -161,6 +143,43 @@ namespace DigiBot.Commands
             Reply($"{winner.Name} has been declared the winner of {bet.Amount}!");
         }
 
+        public void MyPendingBets()
+        {
+            var bets = _manager.GetPendingBets(SourceMessage.User);
+
+            var sb = new StringBuilder();
+
+            DisplayBets(ref sb, bets);
+
+            Reply(sb.ToString());
+        }
+
+        public void ConfirmBet(int? id)
+        {
+            var bet = _manager.ConfirmBet(SourceMessage.User, id ?? 0);
+
+            if (bet == null)
+            {
+                Reply("Bet not found");
+            }
+            else
+            {
+                Reply($"Confirmed bet with {bet.First().Initiator.Name}. Good luck!");
+            }
+        }
+
+        public void RejectBet(int? id)
+        {
+            if(_manager.RejectBet(SourceMessage.User, id ?? 0))
+            {
+                Reply("Coward...");
+            }
+            else
+            {
+                Reply("Not a real bet.");
+            }
+        }
+
         public void Casino()
         {
             var sb = new StringBuilder();
@@ -173,6 +192,8 @@ namespace DigiBot.Commands
             sb.Append("       <Arbitrator>  - Person that will declare the winner of the bet.\\n");
             sb.Append("       <Amount>      - Value of the bet.\\n");
             sb.Append("       <Description> - Note about the bet.\\n");
+            sb.Append(" - ConfirmBet <ID>    : ID is optional, confirms the most recent bet otherwise\\n");
+            sb.Append(" - RejectBet <ID>    : ID is optional, confirms the most recent bet otherwise\\n");
             sb.Append(" - MyBets             : List of your current, active bets.\\n");
             sb.Append(" - MyArbitrations     : List bets that you control the fate of.\\n");
             sb.Append(" - DeclareWinner <ID> <Winner> :\\n");
@@ -183,6 +204,25 @@ namespace DigiBot.Commands
 
             Reply(sb.ToString());
             return;
+        }
+
+        private void DisplayBets(ref StringBuilder sb, IEnumerable<Bet> bets)
+        {
+            sb.Append("Your active bets are:\\n");
+
+            sb.Append("```\\n");
+
+            sb.Append("   |Date     |  Amount  |    Initiator   |    Against     |   Arbitrator   |\\n");
+            sb.Append("---|---------|----------|----------------|----------------|----------------|\\n");
+
+            int i = 1;
+            foreach (var bet in bets)
+            {
+                //sb.Append("00/00/00|Amount|TemplatedOneHaha|TemplatedOneHaha|TemplatedOneHaha");
+                sb.Append($"{i++.ToString().PadLeft(3)}|{bet.Date.Date.ToString("MM/dd/yy")} |{bet.Amount.ToString().PadLeft(10)}|{bet.Initiator.Name.PadLeft(16)}|{bet.Opponent.Name.PadLeft(16)}|{bet.Arbitor.Name.PadLeft(16)}|{bet.Description}\\n");
+            }
+            sb.Append("---|---------|----------|----------------|----------------|----------------|\\n");
+            sb.Append("```\\n");
         }
     }
 }

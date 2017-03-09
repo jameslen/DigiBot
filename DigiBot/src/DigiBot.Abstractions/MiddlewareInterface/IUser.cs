@@ -9,7 +9,7 @@ namespace DigiBot
         string Id { get; }
         IEnumerable<string> Roles { get; }
         bool IsAdmin { get; }
-
+        bool IsBot { get; }
         //IContainer Scope { get; }
     }
 }

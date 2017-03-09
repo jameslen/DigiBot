@@ -57,6 +57,7 @@ namespace DigiBot
 
         private Dictionary<string, Dictionary<string, Account>> _perServerUserAccounts = new Dictionary<string, Dictionary<string, Account>>();
         private List<Bet> _activeBets = new List<Bet>();
+        private List<Bet> _pendingBets = new List<Bet>();
 
         public GamblerManager(IConfigurationRoot config)
         {
@@ -104,7 +105,7 @@ namespace DigiBot
             oppAcc.AddTransaction(-amount);
             initAcc.AddTransaction(-amount);
 
-            _activeBets.Add(bet);
+            _pendingBets.Add(bet);
         }
 
         public Dictionary<string, Account> GetServerAccounts(string server)
@@ -152,6 +153,65 @@ namespace DigiBot
             _activeBets.Remove(bet);
 
             return bet;
+        }
+
+        public IEnumerable<Bet> GetPendingBets(IUser user)
+        {
+            return _pendingBets.OrderBy(b => b.Date).Where(b => b.Opponent == user);
+        }
+
+        public IEnumerable<Bet> ConfirmBet(IUser user, int betId)
+        {
+            var pendingBets = _pendingBets.OrderBy(b => b.Date).Where(b => b.Opponent == user);
+
+            if(pendingBets.Count() == 0)
+            {
+                return null;
+            }
+
+            if (betId == -1)
+            {
+                foreach (var bet in pendingBets)
+                {
+                    _activeBets.Add(bet);
+                    _pendingBets.Remove(bet);
+                }
+
+                return pendingBets;
+            }
+            else
+            {
+                var bet = pendingBets.ElementAt(betId);
+                _pendingBets.Remove(bet);
+                _activeBets.Add(bet);
+
+                return new Bet[]{ bet };
+            }
+        }
+
+        public bool RejectBet(IUser user, int betId)
+        {
+            var pendingBets = _pendingBets.OrderBy(b => b.Date).Where(b => b.Opponent == user);
+
+            if(pendingBets.Count() == 0)
+            {
+                return false;
+            }
+
+            if (betId == -1)
+            {
+                foreach (var bet in pendingBets)
+                {
+                    _pendingBets.Remove(bet);
+                }
+            }
+            else
+            {
+                var bet = pendingBets.ElementAt(betId);
+                _pendingBets.Remove(bet);
+            }
+
+            return true;
         }
     }
 }

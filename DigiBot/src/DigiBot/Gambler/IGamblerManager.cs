@@ -11,5 +11,8 @@ namespace DigiBot
         void CreateBet(string serverId, IUser init, IUser opp, IUser arb, int amount, string desc);
         Account GetUserBalance(string serverId, IUser user);
         Bet CompleteBet(string server, IUser arb, IUser winner, int betId);
+        IEnumerable<Bet> GetPendingBets(IUser user);
+        IEnumerable<Bet> ConfirmBet(IUser user, int betId);
+        bool RejectBet(IUser user, int betId);
     }
 }

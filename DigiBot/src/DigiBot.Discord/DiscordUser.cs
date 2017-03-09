@@ -34,6 +34,8 @@ namespace DigiBot.DiscordMiddleware
             }
         }
 
+        public bool IsBot => BaseUser.User.Bot;
+
         public GuildMember BaseUser { get; }
     }
 }
