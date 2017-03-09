@@ -1,10 +1,67 @@
 ﻿using DigiBot.DiscordMiddleware;
 using DigiDiscord;
+using DigiDiscord.Utilities;
 using System;
 using System.Collections.Generic;
 
 namespace DigiBot
 {
+    public class ConsoleLogger : ILogger
+    {
+        private LogLevel m_minLevel;
+
+        public ConsoleLogger(LogLevel minLevel = LogLevel.Verbose)
+        {
+            m_minLevel = minLevel;
+        }
+
+        public override void Log(LogLevel level, string logLine)
+        {
+            if (level >= m_minLevel)
+            {
+                PrintLevel(level);
+                PrintLine(logLine);
+            }
+        }
+
+        private void PrintLevel(LogLevel level)
+        {
+            var bg = Console.BackgroundColor;
+            var fg = Console.ForegroundColor;
+
+            switch (level)
+            {
+                case LogLevel.Error:
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.ForegroundColor = ConsoleColor.White;
+                    break;
+                case LogLevel.Warning:
+                    Console.BackgroundColor = ConsoleColor.Yellow;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    break;
+                case LogLevel.Info:
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    break;
+                case LogLevel.Verbose:
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    break;
+                case LogLevel.Debug:
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    break;
+            }
+
+            Console.Write($"[{level}] ");
+
+            Console.BackgroundColor = bg;
+            Console.ForegroundColor = fg;
+        }
+
+        private void PrintLine(string line)
+        {
+            Console.WriteLine(line);
+        }
+    }
+
     // TODO: Merge this with DigiDiscord into DigiBot.Discord
     public class DiscordSource : IBotSource
     {
@@ -26,7 +83,7 @@ namespace DigiBot
             _botHostApplication = botHostApplication;
 
             // TODO: REMOVE THIS and use env var
-            discord.InitializeBot(_token).Wait();
+            discord.InitializeBot(_token, new ConsoleLogger(LogLevel.Debug)).Wait();
 
             discord.GuildManager.MessageCreate += ProcessMessage;
 

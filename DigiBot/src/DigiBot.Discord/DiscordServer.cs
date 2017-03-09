@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace DigiBot.DiscordMiddleware
 {
+
     public class DiscordServer : IServer
     {
         private Guild _guild;
