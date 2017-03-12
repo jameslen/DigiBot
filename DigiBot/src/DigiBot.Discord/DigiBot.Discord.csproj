@@ -14,8 +14,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Dev|AnyCPU'" />
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+    <PackageReference Include="System.Net.WebSockets.Client" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DigiBot.Abstractions\DigiBot.Abstractions.csproj" />
-    <ProjectReference Include="..\..\..\..\DigiDiscord\src\DigiDiscord\DigiDiscord.csproj" />
   </ItemGroup>
 
 </Project>

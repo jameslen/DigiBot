@@ -1,4 +1,4 @@
-﻿using DigiDiscord.Utilities;
+﻿using DigiBot.Discord;
 using Microsoft.Extensions.Configuration;
 using System;
 

@@ -88,8 +88,6 @@ namespace DigiBot
             {
                 EnsureStartUp();
                 _botServices = _initializer.ConfigureServices(_botServiceRegistery);
-
-                Console.WriteLine(_botServices.WhatDoIHave());
             }
         }
 

@@ -1,7 +1,9 @@
-﻿namespace DigiBot
+﻿using System.Threading.Tasks;
+
+namespace DigiBot
 {
     public interface IBotSource
     {
-        void Start(IBotHostApplication botHostApplication);
+        Task Start(IBotHostApplication botHostApplication);
     }
 }

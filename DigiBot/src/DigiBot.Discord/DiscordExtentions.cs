@@ -1,13 +1,11 @@
-﻿using DigiBot.DiscordMiddleware;
-using DigiDiscord;
-using StructureMap;
+﻿using StructureMap;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DigiBot
+namespace DigiBot.Discord
 {
     public static class DiscordExtentions
     {

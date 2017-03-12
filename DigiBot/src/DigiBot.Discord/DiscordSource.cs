@@ -1,10 +1,11 @@
-﻿using DigiBot.DiscordMiddleware;
-using DigiDiscord;
-using DigiDiscord.Utilities;
+﻿using DigiBot.Discord.Internal;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace DigiBot
+namespace DigiBot.Discord
 {
     public class ConsoleLogger : ILogger
     {
@@ -63,58 +64,92 @@ namespace DigiBot
     }
 
     // TODO: Merge this with DigiDiscord into DigiBot.Discord
-    public class DiscordSource : IBotSource
+    public class DiscordSource : IBotSource, IDisposable
     {
         private IBotHostApplication _botHostApplication;
 
         private string _token;
 
-        private Dictionary<string, DiscordServer> Guilds = new Dictionary<string, DiscordServer>();
-        private Dictionary<string, DiscordMiddleware.DiscordUser> Users = new Dictionary<string, DiscordMiddleware.DiscordUser>();
+        //private Dictionary<string, DiscordServer> Guilds = new Dictionary<string, DiscordServer>();
+        //private Dictionary<string, DiscordMiddleware.DiscordUser> Users = new Dictionary<string, DiscordMiddleware.DiscordUser>();
+
+        private DiscordHttpClient _client;
+        private GatewayManager _gateway;
+        private GuildManager _guilds;
+
+        private CancellationTokenSource _tokenSource = new CancellationTokenSource();
+        private string _gatewayAddress;
+        private int _currentShard;
+        private int _totalShards;
 
         public DiscordSource(DiscordOptions options)
         {
             _token = options.Token;
+            _gatewayAddress = options.Gateway;
+            _totalShards = options.TotalShards;
+            _currentShard = options.CurrentShard;
+
+            _client = new DiscordHttpClient(null);
+            _client.AddBotAuth(_token);
         }
 
-        public void Start(IBotHostApplication botHostApplication)
+        public async Task Start(IBotHostApplication botHostApplication)
         {
-            var discord = DigiDiscord.Discord.Instance;
             _botHostApplication = botHostApplication;
 
+            if(_gatewayAddress == null)
+            {
+                _gatewayAddress = await GetGatewayAddress();
+            }
+
+            _gateway = new GatewayManager(_gatewayAddress, _token, _tokenSource.Token, new ConsoleLogger(LogLevel.Debug));
+            _guilds = new GuildManager(_client, new ConsoleLogger(LogLevel.Debug));
+
+            _gateway.EventDispatched += _guilds.GatewayMessageHandler;
+
+            _guilds.MessageCreate += ProcessMessage;
+            _guilds.GuildCreated += AddServer;
+
+            _gateway.Initialize(_currentShard, _totalShards);
+
             // TODO: Logger comes from logger factory
-            discord.InitializeBot(_token, new ConsoleLogger(LogLevel.Debug)).Wait();
-
-            discord.GuildManager.MessageCreate += ProcessMessage;
-
-            discord.GuildManager.GuildCreated += AddServer;
-            discord.GuildManager.MemberAdd += AddMember;
+            //var discord = DigiDiscord.Discord.Instance;
+            //discord.InitializeBot(_token, new ConsoleLogger(LogLevel.Debug)).Wait();
+            //
+            //discord.GuildManager.MessageCreate += ProcessMessage;
+            //
+            //discord.GuildManager.GuildCreated += AddServer;
+            //discord.GuildManager.MemberAdd += AddMember;
         }
 
-        private void AddMember(Guild guild, GuildMember member)
+        //private void AddMember(DiscordServer guild, DiscordServerUser member)
+        //{
+        //    var g = Guilds[guild.Id];
+        //
+        //    g.AddUser(member);
+        //}
+        //
+        private void AddServer(DiscordServer g)
         {
-            var g = Guilds[guild.Id];
-
-            g.AddUser(member);
+            g.Scope = _botHostApplication.GetNewScope(g.ID);
+        }
+        
+        public void ProcessMessage(DiscordChannel c, DiscordMessage m)
+        {
+            _botHostApplication.ProcessMessage(m);
         }
 
-        private void AddServer(Guild g)
+        public void Dispose()
         {
-            Guilds.Add(g.Id, new DiscordServer(g, _botHostApplication.GetNewScope(g.Id)));
+            _tokenSource.Cancel();
         }
 
-        public void ProcessMessage(GuildChannel c, Message m)
+        private async Task<string> GetGatewayAddress()
         {
-            //Console.WriteLine($"{c.Name}: {m.Content}");
+            //_Logger?.Verbose("Retrieving gateway...");
+            var payload = await _client.Get(DigiBot.Discord.APIs.Gateway.Bot);
 
-            var message = new DiscordMessage();
-            message.SourceMessage = m;
-            message.Server = Guilds[c.Guild_Id];
-            message.Channel = message.Server.GetChannel(c.Id);
-            message.User = message.Server.GetUser(m.Author.Id);
-
-            // TODO: Clean up handling, use message factory, etc
-            _botHostApplication.ProcessMessage(message);
+            return JObject.Parse(payload)["url"].ToString();
         }
     }
 }

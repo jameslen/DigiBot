@@ -21,8 +21,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiBot.CommandProcessing",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiBot.MessageProcessing", "src\DigiBot.MessageProcessing\DigiBot.MessageProcessing.csproj", "{BA0EF0BB-92EF-4C2E-B9C5-6311A7C18C57}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigiDiscord", "..\..\DigiDiscord\src\DigiDiscord\DigiDiscord.csproj", "{2B5BE14B-C444-4E7F-A9A4-A359F17DE18C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,12 +64,6 @@ Global
 		{BA0EF0BB-92EF-4C2E-B9C5-6311A7C18C57}.Debug-Dev|Any CPU.Build.0 = Debug-Dev|Any CPU
 		{BA0EF0BB-92EF-4C2E-B9C5-6311A7C18C57}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA0EF0BB-92EF-4C2E-B9C5-6311A7C18C57}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2B5BE14B-C444-4E7F-A9A4-A359F17DE18C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2B5BE14B-C444-4E7F-A9A4-A359F17DE18C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2B5BE14B-C444-4E7F-A9A4-A359F17DE18C}.Debug-Dev|Any CPU.ActiveCfg = Debug-Dev|Any CPU
-		{2B5BE14B-C444-4E7F-A9A4-A359F17DE18C}.Debug-Dev|Any CPU.Build.0 = Debug-Dev|Any CPU
-		{2B5BE14B-C444-4E7F-A9A4-A359F17DE18C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2B5BE14B-C444-4E7F-A9A4-A359F17DE18C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -83,6 +75,5 @@ Global
 		{A73FF5D0-B82E-4DB7-9B86-E3F375FE350D} = {1BBE7470-9A05-4DEE-8139-3ACD6DB13E58}
 		{B6A139A9-452E-4EBC-8476-0196B4C4C4AB} = {1BBE7470-9A05-4DEE-8139-3ACD6DB13E58}
 		{BA0EF0BB-92EF-4C2E-B9C5-6311A7C18C57} = {1BBE7470-9A05-4DEE-8139-3ACD6DB13E58}
-		{2B5BE14B-C444-4E7F-A9A4-A359F17DE18C} = {3D282211-8C66-4432-A25D-C01E42ED1202}
 	EndGlobalSection
 EndGlobal
