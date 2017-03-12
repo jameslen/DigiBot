@@ -36,6 +36,7 @@ namespace DigiBot.Discord
         }
 
         public bool IsBot => User.Bot;
+        IServer IUser.Server => Server;
 
         public DiscordUser User { get; set; }
         [JsonProperty(PropertyName = "Roles")]

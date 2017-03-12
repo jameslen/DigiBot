@@ -10,6 +10,6 @@ namespace DigiBot
         IEnumerable<string> Roles { get; }
         bool IsAdmin { get; }
         bool IsBot { get; }
-        //IContainer Scope { get; }
+        IServer Server { get; }
     }
 }

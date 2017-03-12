@@ -102,7 +102,6 @@ namespace DigiBot
             var oppAcc = GetUserBalance(serverId, opp);
             var initAcc = GetUserBalance(serverId, init);
 
-            oppAcc.AddTransaction(-amount);
             initAcc.AddTransaction(-amount);
 
             _pendingBets.Add(bet);
@@ -168,25 +167,19 @@ namespace DigiBot
             {
                 return null;
             }
+            
+            var bet = pendingBets.ElementAt(betId);
 
-            if (betId == -1)
-            {
-                foreach (var bet in pendingBets)
-                {
-                    _activeBets.Add(bet);
-                    _pendingBets.Remove(bet);
-                }
+            var account = GetUserBalance(user.Server.ID, user);
 
-                return pendingBets;
-            }
-            else
+            if(account.CurrentValue >= bet.Amount)
             {
-                var bet = pendingBets.ElementAt(betId);
                 _pendingBets.Remove(bet);
                 _activeBets.Add(bet);
-
-                return new Bet[]{ bet };
+                return new Bet[] { bet };
             }
+
+            return null;
         }
 
         public bool RejectBet(IUser user, int betId)
@@ -198,18 +191,12 @@ namespace DigiBot
                 return false;
             }
 
-            if (betId == -1)
-            {
-                foreach (var bet in pendingBets)
-                {
-                    _pendingBets.Remove(bet);
-                }
-            }
-            else
-            {
-                var bet = pendingBets.ElementAt(betId);
-                _pendingBets.Remove(bet);
-            }
+            var bet = pendingBets.ElementAt(betId);
+            _pendingBets.Remove(bet);
+
+            var account = GetUserBalance(bet.Initiator.Server.ID, bet.Initiator);
+
+            account.AddTransaction(bet.Amount);
 
             return true;
         }

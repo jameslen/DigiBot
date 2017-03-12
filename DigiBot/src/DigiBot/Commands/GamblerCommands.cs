@@ -160,7 +160,7 @@ namespace DigiBot.Commands
 
             if (bet == null)
             {
-                Reply("Bet not found");
+                Reply("Double check your bet.  You might not have enough funds.");
             }
             else
             {
