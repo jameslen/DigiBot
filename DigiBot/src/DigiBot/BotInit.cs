@@ -17,6 +17,7 @@ namespace DigiBot
         {
             var builder = new ConfigurationBuilder()
                               .AddJsonFile("botsettings.json")
+                              .AddJsonFile("botsettings.dev.json", optional: true)
                               .AddEnvironmentVariables();
 
             _Config = builder.Build();
