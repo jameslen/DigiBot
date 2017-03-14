@@ -12,11 +12,13 @@ namespace DigiBot.Commands
         private IConfigurationRoot _config;
         private List<string> _allowedRoles = new List<string>();
 
-        public AdminCommands(IConfigurationRoot config)
+        public AdminCommands(IConfigurationRoot config, IGamblerManager manager)
         {
             _config = config;
 
             Prefix = _config["Config:Prefix"];
+
+            _manager = manager;
         }
 
         public override bool CheckPermissions(IUser user)
@@ -54,6 +56,22 @@ namespace DigiBot.Commands
             sb.Append("```\\n");
 
             Reply(sb.ToString());
+        }
+
+        public void AdjustAccount(IUser user, int amount)
+        {
+            Console.WriteLine($"Adjusting {user.Name} account by {amount}.");
+            var account = _manager.GetUserBalance(SourceMessage.Server.ID, user);
+
+            if(account.CurrentValue + amount < 0)
+            {
+                Reply("Account cannot go negative.");
+                return;
+            }
+            else 
+            {
+                account.AddTransaction(amount);
+            }
         }
     }
 }
