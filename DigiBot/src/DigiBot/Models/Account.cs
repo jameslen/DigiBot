@@ -14,13 +14,18 @@ namespace DigiBot.Models
             History.Add(new Transaction(500, 500));
         }
 
-        public void AddTransaction(int change)
+        public Transaction AddTransaction(int change)
         {
             int amount = CurrentValue + change;
 
-            History.Add(new Transaction(amount, change));
+            var transaction = new Transaction(amount, change);
+
+            History.Add(transaction);
+
+            return transaction;
         }
 
+        public int Id { get; set; } = -1;
         public string ServerId { get; set; }
         public string OwnerId { get; set; }
         public ICollection<Transaction> History = new List<Transaction>();

@@ -6,6 +6,7 @@ namespace DigiBot.Models
 {
     public class Bet
     {
+        public int Id { get; set; }
         public string Initiator { get; set; }
         public string Opponent { get; set; }
         public string Arbitor { get; set; }

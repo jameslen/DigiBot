@@ -5,6 +5,7 @@ namespace DigiBot
 {
     public interface IUser
     {
+        string UserServerId { get; }
         string Name { get; }
         string Id { get; }
         IEnumerable<string> Roles { get; }

@@ -6,6 +6,9 @@ namespace DigiBot.Models
 {
     public class Transaction
     {
+        public int Id { get; set; }
+        public int AccountId { get; set; }
+
         public DateTime Date { get; } = DateTime.UtcNow;
         public int Change { get; }
         public int Amount { get; }
