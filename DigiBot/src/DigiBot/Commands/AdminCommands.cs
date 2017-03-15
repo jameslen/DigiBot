@@ -11,6 +11,7 @@ namespace DigiBot.Commands
     {
         private IConfigurationRoot _config;
         private List<string> _allowedRoles = new List<string>();
+        private IGamblerManager _manager;
 
         public AdminCommands(IConfigurationRoot config, IGamblerManager manager)
         {
