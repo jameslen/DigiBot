@@ -263,7 +263,7 @@ namespace DigiBot.Discord
                         payload["session_id"] = m_sessionId;
                         payload["seq"] = m_lastRecievedSeq;
 
-                        SendData(payload.ToString());
+                        SendData(string.Format(GatewayOp.GatewayPayloadBase, (int)GatewayOpCode.Resume, payload.ToString(), "null", "null"));
                     }
                     break;
                 case GatewayOpCode.InvalidSession:
