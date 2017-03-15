@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using DigiBot.Models;
+using System.Collections.Generic;
 
 namespace DigiBot
 {
@@ -6,11 +7,11 @@ namespace DigiBot
     {
         IEnumerable<Bet> ActiveBets(IUser user);
         IEnumerable<Bet> ArbitratedBets(IUser arb);
-        bool CheckAccounts(string server, IUser user, int amount);
+        bool CheckAccount(IUser user, int amount);
         Dictionary<string, Account> GetServerAccounts(string server);
-        void CreateBet(string serverId, IUser init, IUser opp, IUser arb, int amount, string desc);
-        Account GetUserBalance(string serverId, IUser user);
-        Bet CompleteBet(string server, IUser arb, IUser winner, int betId);
+        void CreateBet(IUser init, IUser opp, IUser arb, int amount, string desc);
+        Account GetUserAccount(IUser user);
+        Bet CompleteBet(IUser arb, IUser winner, int betId);
         IEnumerable<Bet> GetPendingBets(IUser user);
         IEnumerable<Bet> ConfirmBet(IUser user, int betId);
         bool RejectBet(IUser user, int betId);

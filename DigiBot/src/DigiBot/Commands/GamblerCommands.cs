@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using DigiBot.Models;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,7 @@ namespace DigiBot.Commands
         {
             if (user == null)
             {
-                var account = _manager.GetUserBalance(SourceMessage.Server.ID, User);
+                var account = _manager.GetUserAccount(User);
                 Reply($"You currently have ${account.CurrentValue}.");
             }
             else if(user.IsBot)
@@ -32,7 +33,7 @@ namespace DigiBot.Commands
             }
             else
             {
-                var account = _manager.GetUserBalance(SourceMessage.Server.ID, user);
+                var account = _manager.GetUserAccount(user);
                 Reply($"{user.Name} currently has ${account.CurrentValue}.");
             }
         }
@@ -76,19 +77,19 @@ namespace DigiBot.Commands
                 return;
             }
 
-            if (!_manager.CheckAccounts(SourceMessage.Server.ID,SourceMessage.User, amount))
+            if (!_manager.CheckAccount(SourceMessage.User, amount))
             {
                 Reply("You do not have enough funds to cover that bet.");
                 return;
             }
 
-            if (!_manager.CheckAccounts(SourceMessage.Server.ID, opp, amount))
+            if (!_manager.CheckAccount(opp, amount))
             {
                 Reply("Your opponent does not have enough funds to cover that bet.");
                 return;
             }
 
-            _manager.CreateBet(SourceMessage.Server.ID, SourceMessage.User, opp, arb, amount, desc);
+            _manager.CreateBet(SourceMessage.User, opp, arb, amount, desc);
 
             Reply($"Bet between {SourceMessage.User.Name} and {opp.Name} for {amount} created.");
         }
@@ -132,7 +133,7 @@ namespace DigiBot.Commands
         public void DeclareWinner(int betId, IUser winner)
         {
             Console.WriteLine("Declaring Winner");
-            var bet = _manager.CompleteBet(SourceMessage.Server.ID, User, winner, betId);
+            var bet = _manager.CompleteBet(User, winner, betId);
 
             if(bet == null)
             {

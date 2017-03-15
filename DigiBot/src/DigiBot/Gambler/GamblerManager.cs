@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using DigiBot.Models;
+using DigiBot.Repository;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,50 +9,6 @@ using System.Threading.Tasks;
 
 namespace DigiBot
 {
-    public class Bet
-    {
-        public IUser Initiator { get; set; }
-        public IUser Opponent { get; set; }
-        public IUser Arbitor { get; set; }
-        public int Amount { get; set; }
-        public string Description { get; set; }
-        public DateTime Date { get; set; } = DateTime.UtcNow;
-    }
-
-    public class Account
-    {
-        public class Transaction
-        {
-            public DateTime Date { get; } = DateTime.UtcNow;
-            public int Change { get; }
-            public int Amount { get; }
-
-            public Transaction(int amount, int change)
-            {
-                Change = change;
-                Amount = amount;
-            }
-        }
-
-        public Account(IUser owner)
-        {
-            Owner = owner;
-            History.Add(new Transaction(500, 500));
-        }
-
-        public void AddTransaction(int change)
-        {
-            int amount = CurrentValue + change;
-
-            History.Add(new Transaction(amount, change));
-        }
-
-        public IUser Owner { get; }
-        public List<Transaction> History = new List<Transaction>();
-        public DateTime LastTransaction => History.OrderByDescending(t => t.Date).FirstOrDefault().Date;
-        public int CurrentValue => History.OrderByDescending(t => t.Date).FirstOrDefault().Amount;
-    }
-
     public class GamblerManager : IGamblerManager
     {
         private IConfigurationRoot _config;
@@ -58,24 +16,27 @@ namespace DigiBot
         private Dictionary<string, Dictionary<string, Account>> _perServerUserAccounts = new Dictionary<string, Dictionary<string, Account>>();
         private List<Bet> _activeBets = new List<Bet>();
         private List<Bet> _pendingBets = new List<Bet>();
+        private ICasinoRepo _repo;
 
-        public GamblerManager(IConfigurationRoot config)
+        public GamblerManager(IConfigurationRoot config, ICasinoRepo repo)
         {
             _config = config;
+
+            _repo = repo;
         }
 
-        public bool CheckAccounts(string server, IUser user, int amount)
+        public bool CheckAccount(IUser user, int amount)
         {
             Console.WriteLine($"Checking account for {user.Name}");
-            var balance = GetUserBalance(server, user);
+            var balance = GetUserAccount(user);
 
             return balance.CurrentValue >= amount;
         }
 
-        public Account GetUserBalance(string serverId, IUser user)
+        public Account GetUserAccount(IUser user)
         {
             Console.WriteLine($"Getting account for {user.Name}");
-            var serverAccounts = GetServerAccounts(serverId);
+            var serverAccounts = GetServerAccounts(user.Server.ID);
 
             if(!serverAccounts.ContainsKey(user.Id))
             {
@@ -94,13 +55,13 @@ namespace DigiBot
             return account;
         }
 
-        public void CreateBet(string serverId, IUser init, IUser opp, IUser arb, int amount, string desc)
+        public void CreateBet(IUser init, IUser opp, IUser arb, int amount, string desc)
         {
             Console.WriteLine($"Creating bet between {init.Name} and {opp.Name} for {amount}.");
             var bet = new Bet { Amount = amount, Arbitor = arb, Initiator = init, Opponent = opp, Description = desc };
 
-            var oppAcc = GetUserBalance(serverId, opp);
-            var initAcc = GetUserBalance(serverId, init);
+            var oppAcc = GetUserAccount(opp);
+            var initAcc = GetUserAccount(init);
 
             initAcc.AddTransaction(-amount);
 
@@ -127,14 +88,14 @@ namespace DigiBot
             return _activeBets.Where(b => b.Arbitor == arb).OrderBy(b => b.Date);
         }
 
-        public Bet CompleteBet(string server, IUser arb, IUser winner, int betId)
+        public Bet CompleteBet(IUser arb, IUser winner, int betId)
         {
             var bets = _activeBets.Where(b => b.Arbitor == arb).OrderBy(b => b.Date);
 
             var bet = bets.ElementAt(betId - 1);
 
-            var oppAcc = GetUserBalance(server, bet.Opponent);
-            var initAcc = GetUserBalance(server, bet.Initiator);
+            var oppAcc = GetUserAccount(bet.Opponent);
+            var initAcc = GetUserAccount(bet.Initiator);
 
             if(bet.Opponent == winner)
             {
@@ -170,7 +131,7 @@ namespace DigiBot
             
             var bet = pendingBets.ElementAt(betId);
 
-            var account = GetUserBalance(user.Server.ID, user);
+            var account = GetUserAccount(user);
 
             if(account.CurrentValue >= bet.Amount)
             {
@@ -194,7 +155,7 @@ namespace DigiBot
             var bet = pendingBets.ElementAt(betId);
             _pendingBets.Remove(bet);
 
-            var account = GetUserBalance(bet.Initiator.Server.ID, bet.Initiator);
+            var account = GetUserAccount(bet.Initiator);
 
             account.AddTransaction(bet.Amount);
 
