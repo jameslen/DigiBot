@@ -62,7 +62,7 @@ namespace DigiBot.Commands
         public void AdjustAccount(IUser user, int amount)
         {
             Console.WriteLine($"Adjusting {user.Name} account by {amount}.");
-            var account = _manager.GetUserBalance(SourceMessage.Server.ID, user);
+            var account = _manager.GetUserAccount(user);
 
             if(account.CurrentValue + amount < 0)
             {

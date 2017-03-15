@@ -7,9 +7,10 @@ namespace DigiBot.Models
 {
     public class Account
     {
-        public Account(IUser owner)
+        public Account(string owner, string server)
         {
-            Owner = owner;
+            OwnerId = owner;
+            ServerId = server;
             History.Add(new Transaction(500, 500));
         }
 
@@ -20,9 +21,8 @@ namespace DigiBot.Models
             History.Add(new Transaction(amount, change));
         }
 
-        public string ServerId => Owner.Server.ID;
-        public string OwnerId => Owner.Id;
-        public IUser Owner { get; }
+        public string ServerId { get; set; }
+        public string OwnerId { get; set; }
         public ICollection<Transaction> History = new List<Transaction>();
         public DateTime LastTransaction => History.OrderByDescending(t => t.Date).FirstOrDefault().Date;
         public int CurrentValue => History.OrderByDescending(t => t.Date).FirstOrDefault().Amount;

@@ -36,14 +36,19 @@ namespace DigiBot
         public Account GetUserAccount(IUser user)
         {
             Console.WriteLine($"Getting account for {user.Name}");
-            var serverAccounts = GetServerAccounts(user.Server.ID);
+            return GetUserAccount(user.Server.ID, user.Id);
+        }
 
-            if(!serverAccounts.ContainsKey(user.Id))
+        public Account GetUserAccount(string server, string user)
+        {
+            var serverAccounts = GetServerAccounts(server);
+
+            if(!serverAccounts.ContainsKey(user))
             {
-                serverAccounts.Add(user.Id, new Account(user));
+                serverAccounts.Add(user, new Account(user, server));
             }
 
-            var account = serverAccounts[user.Id];
+            var account = serverAccounts[user];
 
             if (account.CurrentValue < 500 && account.LastTransaction.Date.AddDays(1) <= DateTime.UtcNow.Date)
             {
@@ -58,7 +63,7 @@ namespace DigiBot
         public void CreateBet(IUser init, IUser opp, IUser arb, int amount, string desc)
         {
             Console.WriteLine($"Creating bet between {init.Name} and {opp.Name} for {amount}.");
-            var bet = new Bet { Amount = amount, Arbitor = arb, Initiator = init, Opponent = opp, Description = desc };
+            var bet = new Bet { Amount = amount, Arbitor = arb.Id, Initiator = init.Id, Opponent = opp.Id, Description = desc };
 
             var oppAcc = GetUserAccount(opp);
             var initAcc = GetUserAccount(init);
@@ -80,28 +85,28 @@ namespace DigiBot
 
         public IEnumerable<Bet> ActiveBets(IUser user)
         {
-            return _activeBets.Where(b => b.Initiator == user || b.Opponent == user);
+            return _activeBets.Where(b => b.Initiator == user.Id || b.Opponent == user.Id);
         }
 
         public IEnumerable<Bet> ArbitratedBets(IUser arb)
         {
-            return _activeBets.Where(b => b.Arbitor == arb).OrderBy(b => b.Date);
+            return _activeBets.Where(b => b.Arbitor == arb.Id).OrderBy(b => b.Date);
         }
 
         public Bet CompleteBet(IUser arb, IUser winner, int betId)
         {
-            var bets = _activeBets.Where(b => b.Arbitor == arb).OrderBy(b => b.Date);
+            var bets = _activeBets.Where(b => b.Arbitor == arb.Id).OrderBy(b => b.Date);
 
             var bet = bets.ElementAt(betId - 1);
 
-            var oppAcc = GetUserAccount(bet.Opponent);
-            var initAcc = GetUserAccount(bet.Initiator);
+            var oppAcc = GetUserAccount(bet.Opponent, arb.Server.ID);
+            var initAcc = GetUserAccount(bet.Initiator, arb.Server.ID);
 
-            if(bet.Opponent == winner)
+            if(bet.Opponent == winner.Id)
             {
                 oppAcc.AddTransaction(bet.Amount * 2);
             }
-            else if(bet.Initiator == winner)
+            else if(bet.Initiator == winner.Id)
             {
                 initAcc.AddTransaction(bet.Amount * 2);
             }
@@ -117,12 +122,12 @@ namespace DigiBot
 
         public IEnumerable<Bet> GetPendingBets(IUser user)
         {
-            return _pendingBets.OrderBy(b => b.Date).Where(b => b.Opponent == user);
+            return _pendingBets.OrderBy(b => b.Date).Where(b => b.Opponent == user.Id);
         }
 
         public IEnumerable<Bet> ConfirmBet(IUser user, int betId)
         {
-            var pendingBets = _pendingBets.OrderBy(b => b.Date).Where(b => b.Opponent == user);
+            var pendingBets = _pendingBets.OrderBy(b => b.Date).Where(b => b.Opponent == user.Id);
 
             if(pendingBets.Count() == 0)
             {
@@ -145,7 +150,7 @@ namespace DigiBot
 
         public bool RejectBet(IUser user, int betId)
         {
-            var pendingBets = _pendingBets.OrderBy(b => b.Date).Where(b => b.Opponent == user);
+            var pendingBets = _pendingBets.OrderBy(b => b.Date).Where(b => b.Opponent == user.Id);
 
             if(pendingBets.Count() == 0)
             {
@@ -155,7 +160,7 @@ namespace DigiBot
             var bet = pendingBets.ElementAt(betId);
             _pendingBets.Remove(bet);
 
-            var account = GetUserAccount(bet.Initiator);
+            var account = GetUserAccount(bet.Initiator, user.Server.ID);
 
             account.AddTransaction(bet.Amount);
 

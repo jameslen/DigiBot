@@ -47,9 +47,10 @@ namespace DigiBot.Commands
             sb.Append("```\\n");
 
             int i = 1;
-            foreach(var user in accounts.Values.OrderByDescending(u => u.CurrentValue))
+            foreach(var account in accounts.Values.OrderByDescending(u => u.CurrentValue))
             {
-                sb.Append($"  #{i++} {user.Owner.Name.PadRight(10)}: {user.CurrentValue}\\n");
+                var user = SourceMessage.Server.GetUser(account.OwnerId);
+                sb.Append($"  #{i++} {user.Name.PadRight(10)}: {account.CurrentValue}\\n");
             }
 
             sb.Append("```\\n");
@@ -165,7 +166,9 @@ namespace DigiBot.Commands
             }
             else
             {
-                Reply($"Confirmed bet with {bet.First().Initiator.Name}. Good luck!");
+                var latest = bet.First().Initiator;
+                var user = SourceMessage.Server.GetUser(latest);
+                Reply($"Confirmed bet with {user.Name}. Good luck!");
             }
         }
 
@@ -218,7 +221,10 @@ namespace DigiBot.Commands
             foreach (var bet in bets)
             {
                 //sb.Append("00/00/00|Amount|TemplatedOneHaha|TemplatedOneHaha|TemplatedOneHaha");
-                sb.Append($"{i++.ToString().PadLeft(3)}|{bet.Date.Date.ToString("MM/dd/yy")} |{bet.Amount.ToString().PadLeft(10)}|{bet.Initiator.Name.PadLeft(16)}|{bet.Opponent.Name.PadLeft(16)}|{bet.Arbitor.Name.PadLeft(16)}|{bet.Description}\\n");
+                var arb = SourceMessage.Server.GetUser(bet.Arbitor);
+                var init = SourceMessage.Server.GetUser(bet.Initiator);
+                var opp = SourceMessage.Server.GetUser(bet.Opponent);
+                sb.Append($"{i++.ToString().PadLeft(3)}|{bet.Date.Date.ToString("MM/dd/yy")} |{bet.Amount.ToString().PadLeft(10)}|{init.Name.PadLeft(16)}|{opp.Name.PadLeft(16)}|{arb.Name.PadLeft(16)}|{bet.Description}\\n");
             }
             sb.Append("---|---------|----------|----------------|----------------|----------------|\\n");
             sb.Append("```\\n");
