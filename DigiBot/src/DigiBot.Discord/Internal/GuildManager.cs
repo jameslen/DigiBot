@@ -175,7 +175,7 @@ namespace DigiBot.Discord.Internal
                             presence.User = Users[presence.User.Id];
                         }
 
-                        //g.UpdateAllUserPermissions();
+                        g.UpdateAllUserPermissions();
 
                         GuildCreated?.Invoke(g);
                         break;

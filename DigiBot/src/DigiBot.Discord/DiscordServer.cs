@@ -118,6 +118,23 @@ namespace DigiBot.Discord
             return Members[userId];
         }
 
+        public void UpdateAllUserPermissions()
+        {
+            foreach (var member in Members.Values)
+            {
+                UpdateUserPermission(member);
+            }
+        }
+
+        public void UpdateUserPermission(DiscordServerUser member)
+        {
+            member.UserPermissions = 0;
+            foreach (var role in member.UserRoles)
+            {
+                member.UserPermissions |= Roles[role].Permissions;
+            }
+        }
+
         //TODO: Crud Operations
 
     }
