@@ -1,4 +1,7 @@
 ﻿using DigiBot.Commands;
+using DigiBot.DatabaseContext;
+using DigiBot.Repository;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using StructureMap;
 using System;
@@ -32,7 +35,15 @@ namespace DigiBot
             services.AddMessageProcessing();
             services.AddCommandProcessing();
 
-            services.For<IGamblerManager>().Singleton().Use<GamblerManager>();
+            services.For<ICasinoRepo>().Singleton().Use<CasinoRepo>();
+            services.For<ICasinoManager>().Singleton().Use<CasinoManager>();
+
+            var context = new DbContextOptionsBuilder<DigiBotContext>();
+            context.UseSqlServer(_Config["ConnectionStrings:DigiBotContextConnection"]);
+
+            var dbcontext = new DigiBotContext(context.Options);
+
+            services.For<DigiBotContext>().Use(dbcontext);
 
             //services.For<ICommandProcessor>().Use<GamblerCommands>();
         }

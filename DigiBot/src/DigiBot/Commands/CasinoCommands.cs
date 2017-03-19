@@ -1,17 +1,19 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using DigiBot.Models;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DigiBot.Commands
 {
-    public class GamblerCommands : ICommandProcessor
+    public class CasinoCommands : ICommandProcessor
     {
         private IConfigurationRoot _config;
-        private IGamblerManager _manager;
+        private ICasinoManager _manager;
 
-        public GamblerCommands(IConfigurationRoot config, IGamblerManager manager)
+        public CasinoCommands(IConfigurationRoot config, ICasinoManager manager)
         {
             _config = config;
             _manager = manager;
@@ -23,7 +25,7 @@ namespace DigiBot.Commands
         {
             if (user == null)
             {
-                var account = _manager.GetUserBalance(SourceMessage.Server.ID, User);
+                var account = _manager.GetUserAccount(User);
                 Reply($"You currently have ${account.CurrentValue}.");
             }
             else if(user.IsBot)
@@ -32,7 +34,7 @@ namespace DigiBot.Commands
             }
             else
             {
-                var account = _manager.GetUserBalance(SourceMessage.Server.ID, user);
+                var account = _manager.GetUserAccount(user);
                 Reply($"{user.Name} currently has ${account.CurrentValue}.");
             }
         }
@@ -46,9 +48,10 @@ namespace DigiBot.Commands
             sb.Append("```\\n");
 
             int i = 1;
-            foreach(var user in accounts.Values.OrderByDescending(u => u.CurrentValue))
+            foreach(var account in accounts.Values.OrderByDescending(u => u.CurrentValue))
             {
-                sb.Append($"  #{i++} {user.Owner.Name.PadRight(10)}: {user.CurrentValue}\\n");
+                var user = SourceMessage.Server.GetUser(account.OwnerId);
+                sb.Append($"  #{i++} {user.Name.PadRight(10)}: {account.CurrentValue}\\n");
             }
 
             sb.Append("```\\n");
@@ -76,19 +79,19 @@ namespace DigiBot.Commands
                 return;
             }
 
-            if (!_manager.CheckAccounts(SourceMessage.Server.ID,SourceMessage.User, amount))
+            if (!_manager.CheckAccount(SourceMessage.User, amount))
             {
                 Reply("You do not have enough funds to cover that bet.");
                 return;
             }
 
-            if (!_manager.CheckAccounts(SourceMessage.Server.ID, opp, amount))
+            if (!_manager.CheckAccount(opp, amount))
             {
                 Reply("Your opponent does not have enough funds to cover that bet.");
                 return;
             }
 
-            _manager.CreateBet(SourceMessage.Server.ID, SourceMessage.User, opp, arb, amount, desc);
+            _manager.CreateBet(SourceMessage.User, opp, arb, amount, desc);
 
             Reply($"Bet between {SourceMessage.User.Name} and {opp.Name} for {amount} created.");
         }
@@ -132,7 +135,7 @@ namespace DigiBot.Commands
         public void DeclareWinner(int betId, IUser winner)
         {
             Console.WriteLine("Declaring Winner");
-            var bet = _manager.CompleteBet(SourceMessage.Server.ID, User, winner, betId);
+            var bet = _manager.CompleteBet(User, winner, betId);
 
             if(bet == null)
             {
@@ -164,15 +167,29 @@ namespace DigiBot.Commands
             }
             else
             {
-                Reply($"Confirmed bet with {bet.First().Initiator.Name}. Good luck!");
+                var latest = bet.Initiator;
+                var user = SourceMessage.Server.GetUser(latest);
+                Reply($"Confirmed bet with {user.Name}. Good luck!");
             }
         }
 
         public void RejectBet(int? id)
         {
-            if(_manager.RejectBet(SourceMessage.User, id ?? 0))
+            if((_manager.RejectBet(SourceMessage.User, id ?? 0)) != null)
             {
                 Reply("Coward...");
+            }
+            else
+            {
+                Reply("Not a real bet.");
+            }
+        }
+
+        public void CancelBet(int? id)
+        {
+            if ((_manager.RejectBet(SourceMessage.User, id ?? 0)) != null)
+            {
+                Reply("Lame...");
             }
             else
             {
@@ -217,7 +234,10 @@ namespace DigiBot.Commands
             foreach (var bet in bets)
             {
                 //sb.Append("00/00/00|Amount|TemplatedOneHaha|TemplatedOneHaha|TemplatedOneHaha");
-                sb.Append($"{i++.ToString().PadLeft(3)}|{bet.Date.Date.ToString("MM/dd/yy")} |{bet.Amount.ToString().PadLeft(10)}|{bet.Initiator.Name.PadLeft(16)}|{bet.Opponent.Name.PadLeft(16)}|{bet.Arbitor.Name.PadLeft(16)}|{bet.Description}\\n");
+                var arb = SourceMessage.Server.GetUser(bet.Arbitor);
+                var init = SourceMessage.Server.GetUser(bet.Initiator);
+                var opp = SourceMessage.Server.GetUser(bet.Opponent);
+                sb.Append($"{i++.ToString().PadLeft(3)}|{bet.Date.Date.ToString("MM/dd/yy")} |{bet.Amount.ToString().PadLeft(10)}|{init.Name.PadLeft(16)}|{opp.Name.PadLeft(16)}|{arb.Name.PadLeft(16)}|{bet.Description}\\n");
             }
             sb.Append("---|---------|----------|----------------|----------------|----------------|\\n");
             sb.Append("```\\n");

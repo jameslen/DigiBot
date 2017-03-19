@@ -11,9 +11,9 @@ namespace DigiBot.Commands
     {
         private IConfigurationRoot _config;
         private List<string> _allowedRoles = new List<string>();
-        private IGamblerManager _manager;
+        private ICasinoManager _manager;
 
-        public AdminCommands(IConfigurationRoot config, IGamblerManager manager)
+        public AdminCommands(IConfigurationRoot config, ICasinoManager manager)
         {
             _config = config;
 
@@ -62,7 +62,7 @@ namespace DigiBot.Commands
         public void AdjustAccount(IUser user, int amount)
         {
             Console.WriteLine($"Adjusting {user.Name} account by {amount}.");
-            var account = _manager.GetUserBalance(SourceMessage.Server.ID, user);
+            var account = _manager.GetUserAccount(user);
 
             if(account.CurrentValue + amount < 0)
             {
@@ -71,7 +71,9 @@ namespace DigiBot.Commands
             }
             else 
             {
-                account.AddTransaction(amount);
+                var transaction = account.AddTransaction(amount);
+
+                (_manager as CasinoManager).UpdateAccount(account, transaction);
             }
         }
     }
