@@ -19,21 +19,8 @@ namespace DigiBot.Discord
         }
 
         [JsonIgnore]
-        public IEnumerable<string> Roles
-        {
-            get
-            {
-                return Server.Roles.Where(r => UserRoles.Contains(r.Key)).Select(v => v.Value.Name);
-            }
-        }
-
-        public bool IsAdmin 
-        {
-            get
-            {
-                return (UserPermissions & (int)Permissions.ADMINISTRATOR) != 0;
-            }
-        }
+        public IEnumerable<string> Roles => Server.Roles.Where(r => UserRoles.Contains(r.Key)).Select(v => v.Value.Name);
+        public bool IsAdmin => (UserPermissions & (int)Permissions.ADMINISTRATOR) != 0;
 
         public bool IsBot => User.Bot;
         IServer IUser.Server => Server;
@@ -48,5 +35,7 @@ namespace DigiBot.Discord
         [JsonProperty(PropertyName = "Permissions")]
         public int UserPermissions { get; set; }
         public DiscordServer Server { get; set; }
+
+        public string UserServerId => Id + "/" + Server.ID;
     }
 }
