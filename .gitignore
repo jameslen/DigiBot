@@ -20,6 +20,6 @@ Backup/
 # Visual Studio 2015 cache/options directory
 */.vs/
 
-*/Token.txt
+*/efsettings.json
 
 launchSettings.json

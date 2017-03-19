@@ -11,9 +11,9 @@ namespace DigiBot.Commands
     {
         private IConfigurationRoot _config;
         private List<string> _allowedRoles = new List<string>();
-        private IGamblerManager _manager;
+        private ICasinoManager _manager;
 
-        public AdminCommands(IConfigurationRoot config, IGamblerManager manager)
+        public AdminCommands(IConfigurationRoot config, ICasinoManager manager)
         {
             _config = config;
 
@@ -71,7 +71,9 @@ namespace DigiBot.Commands
             }
             else 
             {
-                account.AddTransaction(amount);
+                var transaction = account.AddTransaction(amount);
+
+                (_manager as CasinoManager).UpdateAccount(account, transaction);
             }
         }
     }

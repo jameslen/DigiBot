@@ -1,5 +1,6 @@
 ﻿using DigiBot.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -9,23 +10,31 @@ namespace DigiBot.DatabaseContext
 {
     public class DigiBotContext : DbContext
     {
-        private IConfigurationRoot _config;
-
-        public DigiBotContext(IConfigurationRoot config, DbContextOptions options) : base(options)
+        public DigiBotContext(DbContextOptions<DigiBotContext> options) : base(options)
         {
-            _config = config;
         }
 
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Bet> Bets { get; set; }
+    }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    // This exists so that dotnet ef can connect to the database and update the schema
+    public class DigiBotContextFactory : IDbContextFactory<DigiBotContext>
+    {
+        public DigiBotContext Create(DbContextFactoryOptions options)
         {
-            base.OnConfiguring(optionsBuilder);
+            // Using a separate settings json because i don't want to check in the connection string
+            var config = new ConfigurationBuilder()
+                              .SetBasePath(options.ContentRootPath)
+                              .AddJsonFile("efsettings.json")
+                              .AddEnvironmentVariables()
+                              .Build();
 
-            optionsBuilder.UseSqlServer(_config["ConnectionStrings:DigiBotContextConnection"]);
+            var context = new DbContextOptionsBuilder<DigiBotContext>();
+            context.UseSqlServer(config["ConnectionStrings:DigiBotContextConnection"]);
+
+            return new DigiBotContext(context.Options);
         }
-
     }
 }

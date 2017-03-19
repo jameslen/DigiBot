@@ -23,23 +23,24 @@ namespace DigiBot.Repository
             return (await _context.SaveChangesAsync()) > 0;
         }
 
-        public async Task<Account> GetUserAccount(string serverId, string userId)
+        public Account GetUserAccount(string serverId, string userId)
         {
-            var account = await _context.Accounts.Include(a => a.History)
-                                                 .Where(a => a.OwnerId == userId && a.ServerId == serverId)
-                                                 .FirstOrDefaultAsync();
-            return account;
+            var accounts = _context.Accounts.Where(a => a.OwnerId == userId && a.ServerId == serverId);
+
+            if(accounts.Any())
+            {
+                return accounts.Include("History")
+                               .FirstOrDefault();
+            }
+                        
+            return null;
         }
 
         public void AddAccount(Account account)
         {
-            if(account.Id != -1)
-            {
-                Console.WriteLine("Account already exists.");
-                return;
-            }
-
             _context.Accounts.Add(account);
+
+            _context.Transactions.AddRange(account.History);
         }
 
         public void UpdateAccount(Account account, Transaction update)
@@ -54,7 +55,7 @@ namespace DigiBot.Repository
 
         private async Task<Account> GetAccountById(int id)
         {
-            var account = await _context.Accounts.Include(a => a.History)
+            var account = await _context.Accounts.Include("History")
                                                  .Where(a => a.Id == id)
                                                  .FirstOrDefaultAsync();
             return account;
@@ -68,6 +69,33 @@ namespace DigiBot.Repository
         public void DeleteBet(Bet bet)
         {
             _context.Bets.Remove(bet);
+        }
+
+        public IEnumerable<Bet> GetAciveBets(string serverId, string userId)
+        {
+            return _context.Bets.Where(b => b.Server == serverId && b.State == BetState.Active && (b.Initiator == userId || b.Opponent == userId));
+        }
+
+        public IEnumerable<Bet> GetPendingBets(string serverId, string userId)
+        {
+            return _context.Bets.Where(b => b.Server == serverId && b.State == BetState.Pending && (b.Initiator == userId || b.Opponent == userId));
+        }
+
+        public IEnumerable<Bet> GetArbitratedBets(string serverId, string userId)
+        {
+            return _context.Bets.Where(b => b.Server == serverId && b.State == BetState.Pending && b.Arbitor == userId);
+        }
+
+        public IEnumerable<Account> GetServerAccounts(string serverId)
+        {
+            var accounts = _context.Accounts.Where(a => a.ServerId == serverId);
+
+            if(accounts.Any())
+            {
+                return accounts.Include("History");
+            }
+
+            return null;   
         }
     }
 }

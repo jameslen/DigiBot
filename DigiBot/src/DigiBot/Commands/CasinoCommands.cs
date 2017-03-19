@@ -4,15 +4,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DigiBot.Commands
 {
-    public class GamblerCommands : ICommandProcessor
+    public class CasinoCommands : ICommandProcessor
     {
         private IConfigurationRoot _config;
-        private IGamblerManager _manager;
+        private ICasinoManager _manager;
 
-        public GamblerCommands(IConfigurationRoot config, IGamblerManager manager)
+        public CasinoCommands(IConfigurationRoot config, ICasinoManager manager)
         {
             _config = config;
             _manager = manager;
@@ -166,7 +167,7 @@ namespace DigiBot.Commands
             }
             else
             {
-                var latest = bet.First().Initiator;
+                var latest = bet.Initiator;
                 var user = SourceMessage.Server.GetUser(latest);
                 Reply($"Confirmed bet with {user.Name}. Good luck!");
             }
@@ -174,9 +175,21 @@ namespace DigiBot.Commands
 
         public void RejectBet(int? id)
         {
-            if(_manager.RejectBet(SourceMessage.User, id ?? 0))
+            if((_manager.RejectBet(SourceMessage.User, id ?? 0)) != null)
             {
                 Reply("Coward...");
+            }
+            else
+            {
+                Reply("Not a real bet.");
+            }
+        }
+
+        public void CancelBet(int? id)
+        {
+            if ((_manager.RejectBet(SourceMessage.User, id ?? 0)) != null)
+            {
+                Reply("Lame...");
             }
             else
             {
