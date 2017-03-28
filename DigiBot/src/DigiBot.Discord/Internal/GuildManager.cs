@@ -12,6 +12,7 @@ namespace DigiBot.Discord.Internal
     public enum Events
     {
         READY,
+        RESUMED,
         CHANNEL_CREATE,
         CHANNEL_UPDATE,
         CHANNEL_DELETE,
