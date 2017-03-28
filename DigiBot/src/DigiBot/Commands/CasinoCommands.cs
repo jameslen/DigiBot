@@ -217,6 +217,7 @@ namespace DigiBot.Commands
             sb.Append("       <ID>     - ID of the bet from your list of arbitrations.\\n" +
                       "                  Note: check the ID again before resolving multiple bets\\n");
             sb.Append("       <Winner> - User that made a sucker out of someone else.\\n");
+            // TODO: Add new Commands to the list
             sb.Append("```\\n");
 
             Reply(sb.ToString());

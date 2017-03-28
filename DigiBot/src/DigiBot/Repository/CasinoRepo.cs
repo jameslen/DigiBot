@@ -23,6 +23,7 @@ namespace DigiBot.Repository
             return (await _context.SaveChangesAsync()) > 0;
         }
 
+        #region Accounts
         public Account GetUserAccount(string serverId, string userId)
         {
             var accounts = _context.Accounts.Where(a => a.OwnerId == userId && a.ServerId == serverId);
@@ -60,42 +61,71 @@ namespace DigiBot.Repository
                                                  .FirstOrDefaultAsync();
             return account;
         }
-
-        public void AddBet(Bet bet)
-        {
-            _context.Bets.Add(bet);
-        }
-
-        public void DeleteBet(Bet bet)
-        {
-            _context.Bets.Remove(bet);
-        }
-
-        public IEnumerable<Bet> GetAciveBets(string serverId, string userId)
-        {
-            return _context.Bets.Where(b => b.Server == serverId && b.State == BetState.Active && (b.Initiator == userId || b.Opponent == userId));
-        }
-
-        public IEnumerable<Bet> GetPendingBets(string serverId, string userId)
-        {
-            return _context.Bets.Where(b => b.Server == serverId && b.State == BetState.Pending && (b.Initiator == userId || b.Opponent == userId));
-        }
-
-        public IEnumerable<Bet> GetArbitratedBets(string serverId, string userId)
-        {
-            return _context.Bets.Where(b => b.Server == serverId && b.State == BetState.Pending && b.Arbitor == userId);
-        }
-
         public IEnumerable<Account> GetServerAccounts(string serverId)
         {
             var accounts = _context.Accounts.Where(a => a.ServerId == serverId);
 
-            if(accounts.Any())
+            if (accounts.Any())
             {
                 return accounts.Include("History");
             }
 
-            return null;   
+            return null;
         }
+        #endregion endregion
+
+        #region SingleBet
+        public void AddBet(Bet bet)
+        {
+            _context.Bets.Add(bet);
+        }
+        public void DeleteBet(Bet bet)
+        {
+            _context.Bets.Remove(bet);
+        }
+        public IEnumerable<Bet> GetAciveBets(string serverId, string userId)
+        {
+            return _context.Bets.Where(b => b.Server == serverId && b.State == BetState.Active && (b.Initiator == userId || b.Opponent == userId));
+        }
+        public IEnumerable<Bet> GetPendingBets(string serverId, string userId)
+        {
+            return _context.Bets.Where(b => b.Server == serverId && b.State == BetState.Pending && (b.Initiator == userId || b.Opponent == userId));
+        }
+        public IEnumerable<Bet> GetArbitratedBets(string serverId, string userId)
+        {
+            return _context.Bets.Where(b => b.Server == serverId && b.State == BetState.Pending && b.Arbitor == userId);
+        }
+        #endregion
+
+        #region BetPool
+        public IEnumerable<BetPool> GetOpenBetPools(string serverId)
+        {
+            return null;
+        }
+        public IEnumerable<BetPool> GetOpenHouseBetPools(string serverId)
+        {
+            return null;
+        }
+        public IEnumerable<BetPool> GetOpenUserBetPools(string serverId, string ownerId)
+        {
+            return null;
+        }
+        public IEnumerable<BetPool> GetUserActiveBetPools(string serverId, string userId)
+        {
+            return null;
+        }
+        public void OpenBetPool(BetPool pool)
+        {
+        }
+        public void CloseBetPool(BetPool pool)
+        {
+        }
+
+        public void UpdateBetPool(BetPool pool, PoolBet bet)
+        {
+
+        }
+        #endregion
+
     }
 }

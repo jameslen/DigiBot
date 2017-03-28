@@ -17,6 +17,8 @@ namespace DigiBot.DatabaseContext
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Bet> Bets { get; set; }
+        public DbSet<BetPool> BetPools { get; set; }
+        public DbSet<PoolBet> BetPoolBets { get; set; }
     }
 
     // This exists so that dotnet ef can connect to the database and update the schema

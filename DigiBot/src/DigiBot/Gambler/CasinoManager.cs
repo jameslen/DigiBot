@@ -25,6 +25,7 @@ namespace DigiBot
             _repo = repo;
         }
 
+        #region Accounts
         public bool CheckAccount(IUser user, int amount)
         {
             Console.WriteLine($"Checking account for {user.Name}");
@@ -32,13 +33,11 @@ namespace DigiBot
 
             return balance.CurrentValue >= amount;
         }
-
         public Account GetUserAccount(IUser user)
         {
             Console.WriteLine($"Getting account for {user.Name}");
             return GetUserAccount(user.Server.ID, user.Id);
         }
-
         public Account GetUserAccount(string server, string user)
         {
             var account = _repo.GetUserAccount(server, user);
@@ -63,7 +62,17 @@ namespace DigiBot
 
             return account;
         }
+        public Dictionary<string, Account> GetServerAccounts(string server)
+        {
+            return _repo.GetServerAccounts(server)?.ToDictionary(g => g.OwnerId, g => g);
+        }
+        public void UpdateAccount(Account a, Transaction t)
+        {
+            _repo.UpdateAccount(a, t);
+        }
+        #endregion
 
+        #region Single Bets
         public void CreateBet(IUser init, IUser opp, IUser arb, int amount, string desc)
         {
             Console.WriteLine($"Creating bet between {init.Name} and {opp.Name} for {amount}.");
@@ -78,27 +87,18 @@ namespace DigiBot
 
             _repo.SaveChangesAsync();
         }
-
-        public Dictionary<string, Account> GetServerAccounts(string server)
-        {
-            return _repo.GetServerAccounts(server)?.ToDictionary(g => g.OwnerId, g => g);
-        }
-
         public IEnumerable<Bet> ActiveBets(IUser user)
         {
             return _repo.GetAciveBets(user.Server.ID, user.Id);
         }
-
         public IEnumerable<Bet> GetPendingBets(IUser user)
         {
             return _repo.GetPendingBets(user.Server.ID, user.Id);
         }
-
         public IEnumerable<Bet> ArbitratedBets(IUser arb)
         {
             return _repo.GetArbitratedBets(arb.Server.ID, arb.Id);
         }
-
         public Bet CompleteBet(IUser arb, IUser winner, int betId)
         {
             var bets = ArbitratedBets(arb);
@@ -127,7 +127,6 @@ namespace DigiBot
 
             return bet;
         }
-
         public Bet ConfirmBet(IUser user, int betId)
         {
             var pendingBets = GetPendingBets(user);
@@ -161,7 +160,6 @@ namespace DigiBot
 
             return null;
         }
-
         public Bet RejectBet(IUser user, int betId)
         {
             var pendingBets = GetPendingBets(user);
@@ -189,7 +187,6 @@ namespace DigiBot
 
             return bet;
         }
-
         public Bet CancelBet(IUser user, int betId)
         {
             var pendingBets = GetPendingBets(user);
@@ -217,11 +214,52 @@ namespace DigiBot
 
             return bet;
         }
+        #endregion
 
-        public void UpdateAccount(Account a, Transaction t)
+        #region Bet Pool
+        public void CreateBetPool(IUser owner, bool houseBet, float odds, DateTime close, string description)
         {
-            _repo.UpdateAccount(a, t);
+
         }
+
+        public IEnumerable<BetPool> GetOpenPools(IUser user)
+        {
+            return null;
+        }
+
+        public IEnumerable<BetPool> GetAllOpenUserPools(IUser user)
+        {
+            return null;
+        }
+
+        public IEnumerable<BetPool> GetPoolsByOwner(IUser user)
+        {
+            return null;
+        }
+
+        public IEnumerable<BetPool> GetHousePools(string server)
+        {
+            return null;
+        }
+
+        public BetPool EnterPool(int betId, IUser user, int amount, bool _for)
+        {
+            return null;
+        }
+
+        public BetPool CompletePool(int betId, IUser user, bool result)
+        {
+            return null;
+        }
+
+        public void KillBetPool(int betId, IUser user)
+        {
+            // Admin Command
+        }
+
+
+        #endregion
+
 
         public Task<bool> SaveChanges()
         {
