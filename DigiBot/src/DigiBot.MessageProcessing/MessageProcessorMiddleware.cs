@@ -7,7 +7,7 @@ namespace DigiBot
 {
     public class MessageProcessorMiddleware : IMiddleware
     {
-        private Dictionary<string, IEnumerable<IMessageProcessor>> _serverScopes = new Dictionary<string, IEnumerable<IMessageProcessor>>();
+        private Dictionary<string, IContainer> _serverScopes = new Dictionary<string, IContainer>();
 
         public MessageProcessorMiddleware(IContainer botServices) : base(botServices)
         {
@@ -16,7 +16,12 @@ namespace DigiBot
 
         public override async Task Invoke(IBotMessage message, MessageDelegate next)
         {
-            var services = message.Server.Scope;
+            if (!_serverScopes.ContainsKey(message.Server.ID))
+            {
+                _serverScopes.Add(message.Server.ID, Services.CreateChildContainer());
+            }
+
+            var services = _serverScopes[message.Server.ID];
 
             var processors = services.GetAllInstances<IMessageProcessor>();
 

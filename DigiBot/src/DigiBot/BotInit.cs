@@ -33,19 +33,27 @@ namespace DigiBot
             services.For<IConfigurationRoot>().Singleton().Use(_Config);
 
             services.AddMessageProcessing();
-            services.AddCommandProcessing();
+
+            var commandConfig = new DefaultCommandConfig(new Dictionary<string, string> { { "Prefix", _Config["Config:Prefix"] } }, null, null);
+
+            services.AddCommandProcessing(commandConfig);
 
             services.For<ICasinoRepo>().Singleton().Use<CasinoRepo>();
             services.For<ICasinoManager>().Singleton().Use<CasinoManager>();
 
             var context = new DbContextOptionsBuilder<DigiBotContext>();
-            context.UseSqlServer(_Config["ConnectionStrings:DigiBotContextConnection"]);
+            context.UseSqlServer(_Config["ConnectionStrings:DigiBotContextConnection"], options =>
+            {
+                options.EnableRetryOnFailure(
+                    maxRetryCount: 5,
+                    maxRetryDelay: TimeSpan.FromSeconds(30),
+                    errorNumbersToAdd: null
+                    );
+            });
 
             var dbcontext = new DigiBotContext(context.Options);
 
             services.For<DigiBotContext>().Use(dbcontext);
-
-            //services.For<ICommandProcessor>().Use<GamblerCommands>();
         }
 
         // Params TBD

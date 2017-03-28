@@ -18,7 +18,7 @@ namespace DigiBot
                 {
                     Dictionary<string, object> args = new Dictionary<string, object>();
                     args["botServices"] = builder.Services;
-                    var provider = builder.Services.GetInstance<MiddlewareProvider>(new ExplicitArguments(args));
+                    var provider = builder.Services.GetInstance<MiddlewareProvider>();
 
                     await provider.Invoke(message, next);
                 };

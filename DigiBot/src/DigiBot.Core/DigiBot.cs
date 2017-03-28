@@ -87,6 +87,7 @@ namespace DigiBot
             if(_botServices == null)
             {
                 EnsureStartUp();
+
                 _botServices = _initializer.ConfigureServices(_botServiceRegistery);
             }
         }

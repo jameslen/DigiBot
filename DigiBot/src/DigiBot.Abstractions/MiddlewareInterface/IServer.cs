@@ -10,9 +10,6 @@ namespace DigiBot
 
         string ID { get; }
 
-        // TODO: move scope away from the server
-        IContainer Scope { get; }
-
         IUser GetUser(string userId);
         IChannel GetChannel(string channelId);
     }
