@@ -28,7 +28,7 @@ namespace DigiBot.DatabaseContext
             var config = new ConfigurationBuilder()
                               .SetBasePath(options.ContentRootPath)
                               .AddJsonFile("efsettings.json")
-                              .AddEnvironmentVariables()
+                              //.AddEnvironmentVariables()
                               .Build();
 
             var context = new DbContextOptionsBuilder<DigiBotContext>();

@@ -17,7 +17,7 @@ namespace DigiBot.Commands
         {
             _config = config;
 
-            Prefix = _config["Config:Prefix"];
+            //Prefix = _config["Config:Prefix"];
 
             _manager = manager;
         }

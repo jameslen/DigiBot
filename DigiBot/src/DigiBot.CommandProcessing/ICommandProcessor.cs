@@ -12,8 +12,6 @@ namespace DigiBot
         public IChannel SourceChannel => SourceMessage.Channel;
         public string MessageText => SourceMessage.Message;
 
-        public string Prefix { get; set; }
-
         public virtual bool CheckPermissions(IUser user)
         {
             return true;

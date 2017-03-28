@@ -41,10 +41,8 @@ namespace DigiBot.Discord
 
     public class DiscordServer : IServer
     {
-        private IContainer _scope;
-
         [JsonProperty(PropertyName = "Id")]
-        public string ID{ get; set; }
+        public string ID { get; set; }
         public string Name { get; set; }
         public string Icon { get; set; }
         public string Splash { get; set; }
@@ -72,9 +70,9 @@ namespace DigiBot.Discord
         [JsonProperty(PropertyName = "Channels")]
         public Dictionary<string, DiscordChannel> DiscordChannels { get; set; }
 
-        public DiscordServer(IContainer scope)
+        public DiscordServer()
         {
-            _scope = scope;
+            
         }
 
         [JsonIgnore]
@@ -85,9 +83,6 @@ namespace DigiBot.Discord
                 return DiscordChannels.Values.Select(c => c as IChannel);
             }
         }
-
-        [JsonIgnore]
-        public IContainer Scope { get; internal set; }
 
         [JsonIgnore]
         public IEnumerable<IUser> Users

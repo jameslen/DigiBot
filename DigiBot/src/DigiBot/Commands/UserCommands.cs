@@ -15,7 +15,7 @@ namespace DigiBot
         {
             _config = config;
 
-            Prefix = _config["Config:Prefix"];
+            //Prefix = _config["Config:Prefix"];
         }
 
         public void Echo(string text)
