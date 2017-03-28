@@ -84,7 +84,7 @@ namespace DigiBot
                 scanner.AddAllTypesOf<IMiddleware>();
             });
 
-            services.For<IMiddleware>().ContainerScoped();
+            //services.For<IMiddleware>().ContainerScoped();
 
             return services;
         }

@@ -10,6 +10,8 @@ namespace DigiBot
     {
         public static void AddMessageProcessing(this Registry services)
         {
+            services.ForConcreteType<MessageProcessorMiddleware>().Configure.Singleton();
+
             services.Scan(scanner =>
             {
                 scanner.AssembliesAndExecutablesFromApplicationBaseDirectory();

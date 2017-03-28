@@ -19,5 +19,20 @@ namespace DigiBot
             });
             services.For<ICommandProcessor>().ContainerScoped();
         }
+
+        public static void AddCommandProcessing(this Registry services, ICommandConfig config)
+        {
+            services.ForConcreteType<CommandProcessorMiddleware>().Configure.Singleton();
+
+            services.Scan(scanner =>
+            {
+                scanner.AssembliesAndExecutablesFromApplicationBaseDirectory();
+                scanner.TheCallingAssembly();
+
+                scanner.AddAllTypesOf<ICommandProcessor>();
+            });
+            services.For<ICommandProcessor>().ContainerScoped();
+            services.For<ICommandConfig>().Use(config);
+        }
     }
 }

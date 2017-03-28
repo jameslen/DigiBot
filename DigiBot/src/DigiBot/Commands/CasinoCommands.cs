@@ -18,7 +18,7 @@ namespace DigiBot.Commands
             _config = config;
             _manager = manager;
 
-            Prefix = _config["Config:Prefix"];
+            //Prefix = _config["Config:Prefix"];
         }
 
         public void CheckAccount(IUser user)

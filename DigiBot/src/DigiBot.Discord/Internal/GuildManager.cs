@@ -122,7 +122,7 @@ namespace DigiBot.Discord.Internal
 
                         foreach (var guild in guilds)
                         {
-                            var g = new DiscordServer(null) { ID = guild["id"].ToString(), Unavailable = guild["unavailable"].ToObject<bool>() };
+                            var g = new DiscordServer() { ID = guild["id"].ToString(), Unavailable = guild["unavailable"].ToObject<bool>() };
 
                             Guilds.Add(g.ID, g);
                         }
@@ -138,7 +138,7 @@ namespace DigiBot.Discord.Internal
                         }
                         else
                         {
-                            g = new DiscordServer(null) { ID = eventPayload["id"].ToString() };
+                            g = new DiscordServer() { ID = eventPayload["id"].ToString() };
                             Guilds.Add(g.ID, g);
                         }
 

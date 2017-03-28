@@ -131,7 +131,7 @@ namespace DigiBot.Discord
         //
         private void AddServer(DiscordServer g)
         {
-            g.Scope = _botHostApplication.GetNewScope(g.ID);
+            //g.Scope = _botHostApplication.GetNewScope(g.ID);
         }
         
         public void ProcessMessage(DiscordChannel c, DiscordMessage m)
